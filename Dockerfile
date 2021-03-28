@@ -1,18 +1,4 @@
-ARG project
-
-FROM server:builder AS builder
-
-FROM scratch AS skyrim
-COPY --from=builder /home/server/Build/bin/x64/SkyrimTogetherServer /SkyrimTogetherServer
-ENTRYPOINT ["/SkyrimTogetherServer"]
-
-FROM scratch AS fallout4
-COPY --from=builder /home/server/Build/bin/x64/FalloutTogetherServer /FalloutTogetherServer
-ENTRYPOINT ["/FalloutTogetherServer"]
-
-FROM ${project} AS final
-
-FROM final
+FROM alpine:latest
 
 LABEL author="cyl3x" maintainer="Pterodactyl Software, <support@pterodactyl.io>"
 
@@ -28,8 +14,7 @@ ENV USER=container HOME=/home/container
 WORKDIR /home/container
 
 COPY ./entrypoint.sh /entrypoint.sh
-RUN mv /FalloutTogetherServer /home/container/FalloutTogetherServer
-RUN mv /SkyrimTogetherServer /home/container/SkyrimTogetherServer
+COPY ./FalloutTogetherServer /home/container/FalloutTogetherServer
 
 EXPOSE 10578/udp
 
